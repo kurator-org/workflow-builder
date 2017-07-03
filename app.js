@@ -1,17 +1,19 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 
 var app = express();
-
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.post('/build', function (req, res) {
     var workflowTpl = fs.readFileSync(path.resolve('templates/actors/workflow.yaml'), 'utf8');
     var template = _.template(workflowTpl);
 
-    var json = JSON.parse(fs.readFileSync(path.resolve('templates/example.json'), 'utf8'));
+    console.log(req.body);
+    var json = req.body;
     var result = template({workflow: json.workflow});
 
     json.workflow.actors.forEach(function (actor) {
