@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lib/raphael.min.js"></script>
+    <script type="text/javascript" src="js/lib/underscore-min.js"></script>
+
+    <script type="text/javascript" src="js/builder.js"></script>
+</head>
+<body>
+
+<div style="float: left; position: fixed; z-index: 1000">
+    Select an actor from the list: <select id="actor-select"></select> and give it a unique name: <input id="actor-txt" type="text" /> <button id="add-btn">Add actor</button>
+</div>
+
+<div id="container" style="position: relative"></div>
+
+<script type="text/template" id="actor-template">
+
+    <div class="draggable" style="position: absolute; background-color: gold; border: 2px solid black">
+        <h4><%= actor.name %></h4>
+
+        <div class="grid">
+            <div>
+                <div class="inputs">
+                    <% _.each(actor.inputs, function(input) { %>
+                    <div>
+                        <div class="circle input" id="<%= input.id %>"></div>
+                        <span><%= input.name %></span>
+                    </div>
+                    <% }) %>
+                </div>
+
+                <div></div>
+            </div>
+            <div>
+                <div></div>
+
+                <div class="outputs">
+                    <% _.each(actor.outputs, function(output) { %>
+                    <div>
+                        <span><%= output.name %></span>
+                        <div class="circle output" id="<%= output.id %>"></div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+    var json = [
+        {
+            name: 'MakeWorkspace',
+            template: 'make-workspace',
+            outputs: [
+                { name: 'workspace', id: 'e2' }
+            ]
+        },
+        {
+            name: 'DownloadArchive',
+            template: 'darwin-cloud-lookup',
+            inputs: [
+                { name: 'workspace', id: 'e3' },
+                { name: 'outputfile', id: 'e4' },
+                { name: 'url', id: 'e5' }
+            ],
+            outputs: [
+                { name: 'workspace', id: 'e6' },
+                { name: 'outputfile', id: 'e7' }
+            ]
+        },
+        {
+            name: 'ExtractArchiveCore',
+            template: 'extract-archive-core',
+            inputs: [
+                { name: 'workspace', id: 'e8' },
+                { name: 'inputfile', id: 'e9' },
+                { name: 'outputfile', id: 'e10' }
+            ],
+            outputs: [
+                { name: 'workspace', id: 'e11' },
+                { name: 'outputfile', id: 'e12' }
+            ]
+        },
+        {
+            name: 'CountFieldValues',
+            template: 'count-field-values',
+            inputs: [
+                { name: 'workspace', id: 'e13' },
+                { name: 'inputfile', id: 'e14' },
+                { name: 'format', id: 'e15' },
+                { name: 'fieldlist', id: 'e16' }
+            ],
+            outputs: [
+                { name: 'workspace', id: 'e17' }
+            ]
+        },
+        {
+            name: 'WrapUp',
+            template: 'wrap-up',
+            inputs: [
+                { name: 'workspace', id: 'e18' }
+            ]
+        },
+        {
+            name: 'DarwinCloudLookup',
+            template: 'darwin-cloud-lookup',
+            inputs: [
+                { name: 'workspace', id: 'e19' },
+                { name: 'url', id: 'e20' },
+                { name: 'outputfile', id: 'e21' },
+            ],
+            outputs: [
+                { name: 'workspace', id: 'e22' },
+                { name: 'outputfile', id: 'e23'}
+            ]
+        },
+        {
+            name: 'Darwinize',
+            template: 'darwinize',
+            inputs: [
+                { name: 'workspace', id: 'e24' },
+                { name: 'dwccloudfile', id: 'e25' },
+                { name: 'namespace', id: 'e26' },
+                { name: 'format', id: 'e27'}
+            ],
+            outputs: [
+                { name: 'workspace', id: 'e28' },
+                { name: 'outputfile', id: 'e29'}
+            ]
+        },
+        {
+            name: 'FileToDataStream',
+            template: 'file-to-datastream',
+            inputs: [
+                { name: 'workspace', id: 'e30' },
+                { name: 'inputfile', id: 'e31' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e32' }
+            ]
+        },
+        {
+            name: 'EnvironmentTaggerA',
+            template: 'environment-tagger',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e33' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e34' }
+            ]
+        },
+        {
+            name: 'FilterJustMarine',
+            template: 'filter-just-marine',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e35' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e36' }
+            ]
+        },
+        {
+            name: 'FilterExcludeMarine',
+            template: 'filter-exclude-marine',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e37' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e38' }
+            ]
+        },
+        {
+            name: 'WoRMSLookup',
+            template: 'worms-lookup',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e39' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e40' }
+            ]
+        },
+        {
+            name: 'GBIFLookup',
+            template: 'gbif-lookup',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e41' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e42' }
+            ]
+        },
+        {
+            name: 'StreamMerge',
+            template: 'stream-merge',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e43' },
+                { name: '&lt;DataStream&gt;', id: 'e44' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e45' }
+            ]
+        },
+        {
+            name: 'FileWriter',
+            template: 'file-writer',
+            inputs: [
+                { name: '&lt;DataStream&gt;', id: 'e46' },
+                { name: '&lt;DataStream&gt;', id: 'e47' }
+            ],
+            outputs: [
+                { name: '&lt;DataStream&gt;', id: 'e48' }
+            ]
+        }
+    ];
+
+    $(function () {
+        paper = Raphael("container", "100%", "100%");
+
+        var $select = $('#actor-select');
+        json.forEach(function (item, i) {
+            var $option = $('<option>')
+                .attr('value', item.name)
+                .html(item.name);
+            $select.append($option);
+
+            if (i == 0) {
+                $('#actor-txt').val(item.name);
+            }
+        });
+
+        $select.change(function (evt) {
+            var value = $('#actor-select :selected').val();
+            $('#actor-txt').val(value);
+        });
+
+        $('#add-btn').click(function (evt) {
+            var value = $('#actor-select :selected').val();
+            var name = $('#actor-txt').val();
+
+            console.log(value);
+
+            var obj = json.find(function (item) {
+                if (item.name == value) {
+                    return item;
+                }
+            });
+
+            var clone =  JSON.parse(JSON.stringify(obj));
+            clone.name = name;
+
+            console.log(clone);
+
+            addActor(clone, 100, 100);
+        });
+    });
+</script>
+</body>
+</html>

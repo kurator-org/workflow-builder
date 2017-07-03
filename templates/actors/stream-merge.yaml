@@ -1,0 +1,11 @@
+
+# Merge the streams
+- id: <%= actor.name %>
+  type: StreamMerge
+  properties:
+    listensTo:
+      <% _.each(actor.listensTo, function(actorRef) { %>
+      - !ref <%= actorRef %>
+      <% }); %>
+    parameters:
+      numberOfInputs: 2

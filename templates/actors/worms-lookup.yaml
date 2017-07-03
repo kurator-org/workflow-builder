@@ -1,0 +1,7 @@
+
+# Lookup GUIDs for names in WoRMS
+- id: <%= actor.name %>
+  type: SimpleWoRMSGUIDLookup
+  properties:
+    listensTo:
+      - !ref <%= actor.listensTo %>

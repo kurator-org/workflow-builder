@@ -1,0 +1,23 @@
+
+# Download a Darwin Core archive from a URL given by workflow-defined url parameter.
+# Download occurs in workspace provided by the upstream actor.
+- id: <%= actor.name %>
+  type: PythonActor
+  properties:
+    # The location of the actor source code
+    module: kurator_dwca.downloader
+    # The function to invoke in the module when the actor receives an onData message.
+    onData: downloader
+    # A list of parameters to get from the options dictionary passed from an
+    # upstream actor.
+    inputs:
+      <% _.each(actor.inputs, function(input) { %>
+      <%= input.from %>: <%= input.to %>
+      <% }); %>
+    parameters:
+      <% _.each(actor.parameters, function(parameter) { %>
+      <%= parameter.name %>: <%= parameter.value %>
+      <% }); %>
+    # The "upstream" actor from which to receive a message.
+    listensTo:
+      - !ref <%= actor.listensTo %>

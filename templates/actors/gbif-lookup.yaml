@@ -1,0 +1,7 @@
+
+# Lookup GUIDs for names in GBIF
+- id: <%= actor.name %>
+  type: SimpleGBIFGUIDLookup
+  properties:
+    listensTo:
+      - !ref <%= actor.listensTo %>

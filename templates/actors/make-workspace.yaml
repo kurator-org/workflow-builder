@@ -1,0 +1,30 @@
+
+# Inline python actor to make a workspace on the fly to use for writing temporary
+# if one is not supplied in the workflow-defined parameters. It creates a unique
+# workspace if a workspace location is not explicitly provided, or if the provided
+# one does not exist.
+- id: <%= actor.name %>
+  type: PythonActor
+  properties:
+    # Inline python code to run.
+    code: |
+        import uuid
+        import os
+        # The function to run when an on_start message is received. Accepts a dictionary
+        # of options.
+        def on_start(options):
+            actor = 'MakeWorkspace'
+            print '### Started %s ###' % actor
+            for key, value in options.iteritems():
+                print '%s: %s' % (key, value)
+            options['success']=True
+            if options.has_key('workspace') == False:
+                options['workspace'] ='./workspace_'+str(uuid.uuid1())
+            if not os.path.exists(options['workspace']):
+                os.makedirs(options['workspace'])
+            if not os.path.exists(options['workspace']):
+                options['success']=False
+                options['message']='Unable to create workspace at %s' % options[workspace]
+            else:
+                options['message']='Created workspace %s' % options['workspace']
+            return options

@@ -1,0 +1,7 @@
+
+# take the darwinized occurrence file and stream records from it
+- id: <%= actor.name %>
+  type: FileToFlatDataStreamer
+  properties:
+    listensTo:
+      - !ref <%= actor.listensTo %>

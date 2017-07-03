@@ -1,0 +1,26 @@
+
+# Download darwin_cloud.txt file containing field name to Darwin Core lookups.
+- id: <%= actor.name %>
+  type: PythonActor
+  properties:
+    # The location of the actor source code
+    module: kurator_dwca.downloader
+    # The function to invoke in the module when the actor receives an onData message.
+    onData: downloader
+    # A list of parameters to get from the options dictionary passed from an
+    # upstream actor.
+    inputs:
+      <% _.each(actor.inputs, function(input) { %>
+      <%= input.from %>: <%= input.to %>
+      <% }); %>
+    # A list of parameters to get from the parameters defined at the workflow level or
+    # to set explicitly from values given in this section.
+    parameters:
+      <% _.each(actor.parameters, function(parameter) { %>
+      <%= parameter.name %>: <%= parameter.value %>
+      <% }); %>
+      # Show the name of the upstream actor.
+      messagefrom: <%= actor.listensTo %>
+    # The "upstream" actor from which to receive a message.
+    listensTo:
+      - !ref <%= actor.listensTo %>

@@ -1,0 +1,7 @@
+
+# Tag each record in the stream that appears to be marine with isMarine=true
+- id: EnvironmentTaggerA
+  type: EnvironmentTagger
+  properties:
+    listensTo:
+- !ref FileToDataStream

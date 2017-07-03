@@ -1,0 +1,109 @@
+{
+  "workflow": {
+    "name": "DwCATermCounter",
+    "parameters": [
+      {
+        "global": "dwca_url",
+        "local": "url",
+        "actor": "DownloadArchive"
+      },
+      {
+        "global": "workspace",
+        "local": "workspace",
+        "actor": "MakeWorkspace"
+      },
+      {
+        "global": "format",
+        "local": "format",
+        "actor": "CountFieldValues"
+      },
+      {
+        "global": "fieldlist",
+        "local": "fieldlist",
+        "actor": "CountFieldValues"
+      }
+    ],
+    "actors": [
+      {
+        "template": "make-workspace",
+        "name": "MakeWorkspace"
+      },
+      {
+        "template": "download-archive",
+        "name": "DownloadArchive",
+        "listensTo": "MakeWorkspace",
+        "inputs": [
+          {
+            "to": "workspace",
+            "from": "workspace"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "outputfile",
+            "value": "dwca.zip"
+          }
+        ]
+      },
+      {
+        "template": "extract-archive-core",
+        "name": "ExtractArchiveCore",
+        "listensTo": "DownloadArchive",
+        "inputs": [
+          {
+            "to": "inputfile",
+            "from": "outputfile"
+          },
+          {
+            "to": "workspace",
+            "from": "workspace"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "outputfile",
+            "value": "dwca_extracted_occurrences.txt"
+          }
+        ]
+      },
+      {
+        "template": "count-field-values",
+        "name": "CountFieldValues",
+        "listensTo": "ExtractArchiveCore",
+        "inputs": [
+          {
+            "to": "workspace",
+            "from": "workspace"
+          },
+          {
+            "to": "previoussuccess",
+            "from": "success"
+          },
+          {
+            "to": "previousmessage",
+            "from": "message"
+          }
+        ]
+      },
+      {
+        "template": "wrap-up",
+        "name": "WrapUp",
+        "listensTo": "CountFieldValues",
+        "inputs": [
+          {
+            "to": "workspace",
+            "from": "workspace"
+          },
+          {
+            "to": "previoussuccess",
+            "from": "success"
+          },
+          {
+            "to": "previousmessage",
+            "from": "message"
+          }
+        ]
+      }
+    ]
+  }
+}

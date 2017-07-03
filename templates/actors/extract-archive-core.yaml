@@ -1,0 +1,22 @@
+
+# Extract core file into a tab-separated value file in workspace from Darwin Core archive.
+- id: <%= actor.name %>
+  type: PythonActor
+  properties:
+    # The location of the actor source code
+    module: kurator_dwca.dwca_core_to_tsv
+    # The function to invoke in the module when the actor receives an onData message.
+    onData: dwca_core_to_tsv
+    # A list of parameters to get from the options dictionary passed from an
+    # upstream actor.
+    inputs:
+      <% _.each(actor.inputs, function(input) { %>
+      <%= input.from %>: <%= input.to %>
+      <% }); %>
+    parameters:
+      <% _.each(actor.parameters, function(parameter) { %>
+      <%= parameter.name %>: <%= parameter.value %>
+      <% }); %>
+    # The "upstream" actor from which to receive a message.
+    listensTo:
+      - !ref <%= actor.listensTo %>

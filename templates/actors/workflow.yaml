@@ -1,0 +1,27 @@
+imports:
+
+- classpath:/org/kurator/akka/types.yaml
+
+# Definitions of the Workflow and actors
+components:
+
+### The named workflow ###
+- id: <%= workflow.name %>
+  type: Workflow
+  properties:
+    actors:
+      # Actors invoked in the workflow. Every actor that will be invoked must be on this
+      # list. Though the order does not matter, it is helpful to keep the list in more
+      # or less the order in which they'll be invoked, for clarity.
+      <% _.each(workflow.actors, function(actor) { %>
+      - !ref <%= actor.name %>
+      <% }); %>
+
+    # Each parameter defined here enters the workflow from the command line and is
+    # delivered in the options dictionary of the specified actor.
+    parameters:
+      <% _.each(workflow.parameters, function(parameter) { %>
+      <%= parameter.global %>:
+        actor: !ref <%= parameter.actor %>
+        parameter: <%= parameter.local %>
+      <% }); %>

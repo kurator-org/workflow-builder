@@ -1,0 +1,8 @@
+{
+  "name": "workflow-builder",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "^4.15.3",
+    "underscore": "^1.8.3"
+  }
+}

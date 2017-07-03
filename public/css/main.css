@@ -1,0 +1,58 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+#container {
+    width: 100%;
+    height: 100%;
+}
+
+h4, span {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    background-color: white;
+    border: 2px solid black;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.inputs {
+    float: left;
+    margin-left: -0.7em;
+}
+
+.outputs {
+    float: right;
+    margin-right: -0.7em;
+}
+
+.inputs > div {
+    padding: 2px 2px 2px 0px;
+}
+
+.outputs > div {
+    padding: 2px 0px 2px 2px;
+}
+
+.grid {
+    display: table;
+    border-collapse:collapse;
+}
+.grid > div {
+    display: table-row;
+}
+.grid > div > div {
+    display: table-cell;
+}

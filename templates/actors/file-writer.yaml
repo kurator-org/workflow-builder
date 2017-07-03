@@ -1,0 +1,12 @@
+
+# Write to a csv file
+- id: <%= actor.name %>
+  type: WorkspaceCsvFileWriter
+  properties:
+    listensTo:
+      <% _.each(actor.listensTo, function(actorRef) { %>
+      - !ref <%= actorRef %>
+      <% }); %>
+    parameters:
+      filePath: mergedoutuputfile.csv
+      numberOfInputs: 2

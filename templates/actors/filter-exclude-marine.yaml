@@ -1,0 +1,11 @@
+
+# Pass only records not tagged with isMarine=true
+- id: <%= actor.name %>
+  type: SingleTermStreamFilter
+  properties:
+    listensTo:
+      - !ref <%= actor.listensTo %>
+    parameters:
+      filterKeyToMatch: isMarine
+      matchValue: 'true'
+      passOnMatch: false
