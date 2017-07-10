@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.1.1/min/dropzone.min.css" >
+</head>
+<body>
+<style>
+    html {
+        margin: 40px auto;
+    }
+
+    .dropzone {
+        border: 2px dashed #0087F7;
+        border-radius: 5px;
+        background: white; }
+    .dropzone .dz-message {
+        font-weight: 400; }
+    .dropzone .dz-message .note {
+        font-size: 0.8em;
+        font-weight: 200;
+        display: block;
+        margin-top: 1.4rem; }
+</style>
+
+<div class="container">
+        <label>Yaml Template: </label>
+<pre style="display: none;"><code id="yaml-template" class="yaml"></code></pre>
+<form>
+    <input id="template-upload" type="file" />
+</form>
+    <button id="apply-btn" class="btn btn-success" style="display: none">Apply template to JSON</button>
+<hr />
+
+    <div class="form-group">
+        <label for="json-input">JSON: </label>
+        <textarea class="form-control" id="json-input" rows="20">{
+    "name": "Darwinize",
+    "listensTo": "DownloadDarwinCloudLookup",
+    "parameters": [
+        {
+            "name": "outputfile",
+            "value": "darwinized_file"
+        }
+    ],
+    "inputs": [
+        {
+            "from": "workspace",
+            "to": "workspace"
+        },
+        {
+            "from": "outputfile",
+            "to": "dwccloudfile"
+        }
+    ]
+}
+    </textarea>
+    </div>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.1.1/min/dropzone.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
+
+<script>
+    $(function () {
+        $('#template-upload').change(function (e) {
+            var reader = new FileReader();
+            var file = e.target.files[0];
+
+            reader.addEventListener("load", function(event) {
+                var textFile = event.target;
+                $('#yaml-template').html(textFile.result);
+                $('#yaml-template').parent().toggle();
+                $('#template-upload').parent().hide();
+                $('#yaml-template').each(function(i, block) {
+                    hljs.highlightBlock(block);
+                });
+                $('#apply-btn').show();
+            });
+
+            reader.readAsText(file);
+        });
+
+       $('#apply-btn').click(function (e) {
+           var template = _.template($('#yaml-template').text());
+           var json = JSON.parse($('#json-input').val());
+           var yaml = template({ actor: json });
+
+           var blob = new Blob([yaml], {type: "text/yaml;charset=utf-8"});
+           saveAs(blob, "workflow.yaml");
+
+           console.log(yaml);
+       })
+    });
+</script>
+</body>
+</html>
